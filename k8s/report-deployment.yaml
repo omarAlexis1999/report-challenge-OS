@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: report-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: report-challenge
+  template:
+    metadata:
+      labels:
+        app: report-challenge
+    spec:
+      containers:
+      - name: report-challenge
+        image: ${ACR_NAME}.azurecr.io/report-challenge:${IMAGE_TAG}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8094
+        envFrom:
+        - configMapRef:
+            name: general-config
+        - secretRef:
+            name: general-secret
+      imagePullSecrets:
+      - name: acr-secret
